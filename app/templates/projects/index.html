@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Projetos{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header row-header">
+        <div>
+            <p class="eyebrow">Projetos</p>
+            <h1 class="page-title">Portifolio academico em acompanhamento.</h1>
+            <p class="page-subtitle">Acesse projetos, acompanhe status e entre no fluxo de escrita e revisao.</p>
+        </div>
+        {% if current_user.role_slug == 'student' %}
+            <a href="{{ url_for('projects.create') }}" class="button button-primary">Novo projeto</a>
+        {% endif %}
+    </div>
+    <section class="panel">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Tipo</th>
+                    <th>Area</th>
+                    <th>Status</th>
+                    <th>Progresso</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                    <tr>
+                        <td>{{ project.title }}</td>
+                        <td>{{ project.project_type }}</td>
+                        <td>{{ project.thematic_area or '-' }}</td>
+                        <td>{{ project.status }}</td>
+                        <td>{{ calculate_project_completion(project) }}%</td>
+                        <td><a href="{{ url_for('projects.detail', project_id=project.id) }}" class="text-link">Abrir</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6">Nenhum projeto cadastrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</section>
+{% endblock %}

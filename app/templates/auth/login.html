@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Entrar{% endblock %}
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-card">
+        <p class="eyebrow">Acesso institucional</p>
+        <h1 class="page-title">Entrar no {{ app_name }}</h1>
+        <p class="page-subtitle">Acompanhe trilhas metodologicas, projetos, referencias e feedbacks em um ambiente unico.</p>
+        <form method="post" class="form-stack">
+            <label class="field">
+                <span>E-mail</span>
+                <input type="email" name="email" placeholder="seuemail@instituicao.br" required>
+            </label>
+            <label class="field">
+                <span>Senha</span>
+                <input type="password" name="password" placeholder="Sua senha" required>
+            </label>
+            <button type="submit" class="button button-primary button-block">Entrar</button>
+        </form>
+        <p class="inline-note">Primeiro acesso? <a href="{{ url_for('auth.register') }}">Criar conta</a></p>
+    </div>
+</section>
+{% endblock %}

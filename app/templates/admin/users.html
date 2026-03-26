@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Usuarios{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Gestao institucional</p>
+        <h1 class="page-title">Usuarios e perfis</h1>
+        <p class="page-subtitle">Cadastro administrativo de estudantes, orientadores e coordenacao.</p>
+    </div>
+    <div class="content-grid">
+        <section class="panel panel-full">
+            <table class="data-table">
+                <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Curso</th></tr></thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.role }}</td><td>{{ user.course }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Novo usuario</p><h2 class="panel-title">Cadastro rapido</h2></div></div>
+            <form method="post" class="form-stack">
+                <label class="field"><span>Nome completo</span><input type="text" name="full_name" required></label>
+                <label class="field"><span>E-mail</span><input type="email" name="email" required></label>
+                <label class="field"><span>Senha inicial</span><input type="password" name="password" required></label>
+                <label class="field"><span>Perfil</span><select name="role_id">{% for role in roles %}<option value="{{ role.id }}">{{ role.name }}</option>{% endfor %}</select></label>
+                <label class="field"><span>Curso</span><input type="text" name="course_name"></label>
+                <label class="field"><span>Matricula</span><input type="text" name="registration_number"></label>
+                <label class="field"><span>Departamento</span><input type="text" name="department"></label>
+                <label class="field"><span>Titulacao</span><input type="text" name="teacher_title"></label>
+                <button type="submit" class="button button-primary">Salvar usuario</button>
+            </form>
+        </section>
+    </div>
+</section>
+{% endblock %}

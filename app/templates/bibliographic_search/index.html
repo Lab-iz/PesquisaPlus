@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Busca Bibliografica{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Busca bibliografica guiada</p>
+        <h1 class="page-title">Registros de busca do projeto</h1>
+        <p class="page-subtitle">{{ project.title }}</p>
+    </div>
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Buscas registradas</p><h2 class="panel-title">Historico</h2></div></div>
+            <ul class="clean-list">
+                {% for search in project.bibliographic_searches %}
+                    <li class="list-block">
+                        <strong>{{ search.title }}</strong>
+                        <p>{{ search.keywords }}</p>
+                        <span class="muted">{{ search.databases_consulted }}</span>
+                        <a href="{{ url_for('bibliographic_search.detail', search_id=search.id) }}" class="text-link">Abrir registro</a>
+                    </li>
+                {% else %}
+                    <li class="list-block">Nenhuma busca registrada ainda.</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% if current_user.role_slug in ['student', 'admin'] %}
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Novo ciclo</p><h2 class="panel-title">Registrar busca</h2></div></div>
+            <form method="post" class="form-stack">
+                <label class="field"><span>Titulo da busca</span><input type="text" name="title" required></label>
+                <label class="field"><span>Palavras-chave</span><input type="text" name="keywords"></label>
+                <label class="field"><span>Bases consultadas</span><input type="text" name="databases_consulted" placeholder="Scielo; PubMed; Google Scholar"></label>
+                <label class="field"><span>Criterios de inclusao</span><textarea name="inclusion_criteria" rows="4"></textarea></label>
+                <label class="field"><span>Criterios de exclusao</span><textarea name="exclusion_criteria" rows="4"></textarea></label>
+                <label class="field"><span>Observacoes</span><textarea name="notes" rows="4"></textarea></label>
+                <button type="submit" class="button button-primary">Salvar busca</button>
+            </form>
+        </section>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

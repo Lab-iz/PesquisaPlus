@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Plataforma Academica{% endblock %}
+{% block content %}
+<section class="hero-shell">
+    <div class="hero-panel">
+        <p class="eyebrow">Plataforma institucional para pesquisa e TCC</p>
+        <h1 class="hero-title">Escrita cientifica, metodologia e acompanhamento em um fluxo unico.</h1>
+        <p class="hero-copy">O PESQUISA+ organiza a preparacao academica por etapas, reduz insegurancas na escrita e entrega visibilidade real para estudantes, orientadores e coordenacao.</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('auth.login') }}" class="button button-primary">Entrar na plataforma</a>
+            <a href="{{ url_for('auth.register') }}" class="button button-secondary">Criar conta</a>
+        </div>
+    </div>
+    <div class="hero-grid">
+        <article class="hero-card">
+            <h2>Fluxo guiado de pesquisa</h2>
+            <p>Problema, objetivos, metodologia, cronograma, resumo e secoes do trabalho em um processo acompanhado.</p>
+        </article>
+        <article class="hero-card">
+            <h2>Orientacao com contexto</h2>
+            <p>Feedback por secao, pendencias visiveis, alertas de atraso e leitura do progresso por projeto.</p>
+        </article>
+        <article class="hero-card">
+            <h2>Base pronta para expandir</h2>
+            <p>Arquitetura modular, camada de sugestao textual desacoplada e relatorios exportaveis para uso institucional.</p>
+        </article>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | {{ search.title }}{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header row-header">
+        <div>
+            <p class="eyebrow">Busca bibliografica</p>
+            <h1 class="page-title">{{ search.title }}</h1>
+            <p class="page-subtitle">{{ search.keywords }}</p>
+        </div>
+        <a href="{{ url_for('bibliographic_search.index', project_id=search.project_id) }}" class="button button-secondary">Voltar</a>
+    </div>
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Parametros</p><h2 class="panel-title">Criterios e bases</h2></div></div>
+            <p><strong>Bases:</strong> {{ search.databases_consulted or '-' }}</p>
+            <p><strong>Inclusao:</strong> {{ search.inclusion_criteria or '-' }}</p>
+            <p><strong>Exclusao:</strong> {{ search.exclusion_criteria or '-' }}</p>
+            <p><strong>Observacoes:</strong> {{ search.notes or '-' }}</p>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Artigos encontrados</p><h2 class="panel-title">Selecao e leitura</h2></div></div>
+            <ul class="clean-list">
+                {% for entry in search.entries %}
+                    <li class="list-block">
+                        <strong>{{ entry.title }}</strong>
+                        <p>{{ entry.authors }} · {{ entry.year }} · {{ entry.source }}</p>
+                        <span class="badge {% if entry.was_selected %}badge-success{% else %}badge-neutral{% endif %}">{{ 'Selecionado' if entry.was_selected else 'Nao selecionado' }}</span>
+                        <p class="muted">{{ entry.reading_notes }}</p>
+                    </li>
+                {% else %}
+                    <li class="list-block">Nenhum artigo registrado ainda.</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% if current_user.role_slug in ['student', 'admin'] %}
+        <section class="panel panel-full">
+            <div class="panel-heading"><div><p class="panel-label">Adicionar item</p><h2 class="panel-title">Registro de leitura</h2></div></div>
+            <form method="post" class="form-grid two-columns">
+                <label class="field full-span"><span>Titulo</span><input type="text" name="title" required></label>
+                <label class="field"><span>Autores</span><input type="text" name="authors"></label>
+                <label class="field"><span>Ano</span><input type="text" name="year"></label>
+                <label class="field"><span>Fonte</span><input type="text" name="source"></label>
+                <label class="checkbox-field"><input type="checkbox" name="was_selected" value="1"> <span>Selecionado para revisao</span></label>
+                <label class="field full-span"><span>Observacoes de leitura</span><textarea name="reading_notes" rows="4"></textarea></label>
+                <div class="form-actions full-span"><button type="submit" class="button button-primary">Salvar item</button></div>
+            </form>
+        </section>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

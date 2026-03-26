@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | {{ section.title }}{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header row-header">
+        <div>
+            <p class="eyebrow">Editor estruturado</p>
+            <h1 class="page-title">{{ section.title }}</h1>
+            <p class="page-subtitle">{{ guidance }}</p>
+        </div>
+        <a href="{{ url_for('projects.detail', project_id=project.id) }}" class="button button-secondary">Voltar ao projeto</a>
+    </div>
+    <div class="content-grid">
+        <section class="panel panel-full">
+            <form method="post" class="form-stack">
+                <div class="editor-toolbar">
+                    <span class="muted">Palavras: {{ section.word_count }}</span>
+                    {% if can_edit %}
+                        <label class="field compact-field">
+                            <span>Status</span>
+                            <select name="status">
+                                {% for status in ['draft', 'submitted', 'reviewed', 'approved'] %}
+                                    <option value="{{ status }}" {% if section.status == status %}selected{% endif %}>{{ status }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    {% else %}
+                        <span class="badge badge-neutral">{{ section.status }}</span>
+                    {% endif %}
+                </div>
+                <textarea name="content" rows="18" class="editor-area" {% if not can_edit %}readonly{% endif %}>{{ section.content }}</textarea>
+                {% if can_edit %}
+                    <div class="form-actions">
+                        <button type="submit" class="button button-primary">Salvar secao</button>
+                    </div>
+                {% endif %}
+            </form>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Historico</p><h2 class="panel-title">Versoes anteriores</h2></div></div>
+            <ul class="clean-list">
+                {% for revision in section.revisions %}
+                    <li class="list-row"><strong>Versao {{ revision.version_number }}</strong><span class="muted">{{ revision.created_at.strftime('%d/%m/%Y %H:%M') }}</span></li>
+                {% else %}
+                    <li class="list-block">Sem revisoes anteriores registradas.</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Feedback</p><h2 class="panel-title">Orientacao por secao</h2></div></div>
+            <ul class="clean-list">
+                {% for feedback in section.feedbacks %}
+                    <li class="list-block">
+                        <strong>{{ feedback.advisor.full_name }} · {{ feedback.status_tag }}</strong>
+                        <p>{{ feedback.message }}</p>
+                        <span class="muted">{{ feedback.created_at.strftime('%d/%m/%Y') }}</span>
+                    </li>
+                {% else %}
+                    <li class="list-block">Nenhum feedback registrado ainda.</li>
+                {% endfor %}
+            </ul>
+            {% if current_user.role_slug in ['advisor', 'admin'] %}
+                <form method="post" action="{{ url_for('advisor.add_feedback', section_id=section.id) }}" class="form-stack top-gap">
+                    <label class="field"><span>Status da devolutiva</span><select name="status_tag"><option value="guidance">Orientacao</option><option value="review">Revisao</option><option value="approved">Aprovado</option><option value="needs_revision">Ajustes</option></select></label>
+                    <textarea name="message" rows="4" placeholder="Registrar feedback academico"></textarea>
+                    <button type="submit" class="button button-primary">Salvar feedback</button>
+                </form>
+            {% endif %}
+            {% if abstract_analysis %}
+                <div class="notice-box top-gap">
+                    <strong>Analise do resumo</strong>
+                    <p class="muted">Palavras: {{ abstract_analysis.word_count }}</p>
+                    <div class="tag-row">
+                        {% for key, present in abstract_analysis.presence.items() %}
+                            <span class="badge {% if present %}badge-success{% else %}badge-warning{% endif %}">{{ key }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

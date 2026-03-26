@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Metodologia{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Formacao metodologica</p>
+        <h1 class="page-title">Trilhas curtas para apoiar cada etapa da pesquisa.</h1>
+        <p class="page-subtitle">Conteudos objetivos, checklist, atividade breve e exemplo pratico para reduzir inseguranca na producao academica.</p>
+    </div>
+    <div class="module-grid">
+        {% for module in modules %}
+            {% set progress = (catalog | selectattr('module.id', 'equalto', module.id) | list | first) if catalog else None %}
+            <article class="module-card">
+                <p class="panel-label">Modulo {{ loop.index }}</p>
+                <h2>{{ module.title }}</h2>
+                <p>{{ module.overview }}</p>
+                {% if progress %}
+                    <div class="progress-bar"><span style="width: {{ progress.progress }}%"></span></div>
+                    <p class="muted">{{ progress.completed }}/{{ progress.total }} licoes concluidas</p>
+                {% endif %}
+                <a href="{{ url_for('methodology.module_detail', slug=module.slug) }}" class="button button-secondary">Abrir modulo</a>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

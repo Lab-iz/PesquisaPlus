@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Painel do Estudante{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Painel do estudante</p>
+        <h1 class="page-title">Pesquisa em andamento com apoio formativo e visao de progresso.</h1>
+        <p class="page-subtitle">Acompanhe seu projeto, trilhas metodologicas, feedbacks recentes e etapas que pedem sua atencao.</p>
+    </div>
+
+    <div class="metric-grid">
+        <article class="metric-card">
+            <span class="metric-label">Projeto atual</span>
+            <strong class="metric-value">{{ data.project.title if data.project else 'Nenhum projeto iniciado' }}</strong>
+            <span class="metric-note">{{ data.project.project_type if data.project else 'Crie um projeto para iniciar o fluxo.' }}</span>
+        </article>
+        <article class="metric-card">
+            <span class="metric-label">Progresso do projeto</span>
+            <strong class="metric-value">{{ data.project_progress }}%</strong>
+            <div class="progress-bar"><span style="width: {{ data.project_progress }}%"></span></div>
+        </article>
+        <article class="metric-card">
+            <span class="metric-label">Formacao metodologica</span>
+            <strong class="metric-value">{{ data.methodology_progress }}%</strong>
+            <div class="progress-bar"><span style="width: {{ data.methodology_progress }}%"></span></div>
+        </article>
+    </div>
+
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="panel-label">Pendencias por secao</p>
+                    <h2 class="panel-title">Escrita estruturada</h2>
+                </div>
+                {% if data.project %}
+                    <a href="{{ url_for('projects.detail', project_id=data.project.id) }}" class="text-link">Abrir projeto</a>
+                {% endif %}
+            </div>
+            {% if data.pending_sections %}
+                <ul class="clean-list">
+                    {% for section in data.pending_sections %}
+                        <li class="list-row">
+                            <div>
+                                <strong>{{ section.title }}</strong>
+                                <span class="muted">Status: {{ section.status }}</span>
+                            </div>
+                            <a href="{{ url_for('projects.section_editor', project_id=section.project_id, section_key=section.key) }}" class="button button-tertiary">Editar</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty-copy">As secoes aprovadas ou ainda nao iniciadas aparecerao aqui conforme seu trabalho avancar.</p>
+            {% endif %}
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="panel-label">Trilha metodologica</p>
+                    <h2 class="panel-title">Modulos em progresso</h2>
+                </div>
+                <a href="{{ url_for('methodology.index') }}" class="text-link">Ver trilhas</a>
+            </div>
+            <ul class="clean-list">
+                {% for item in data.catalog %}
+                    <li class="list-block">
+                        <div class="list-meta">
+                            <strong>{{ item.module.title }}</strong>
+                            <span>{{ item.completed }}/{{ item.total }} licoes concluidas</span>
+                        </div>
+                        <div class="progress-bar compact"><span style="width: {{ item.progress }}%"></span></div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="panel-label">Orientacao</p>
+                    <h2 class="panel-title">Feedbacks recentes</h2>
+                </div>
+            </div>
+            {% if data.recent_feedback %}
+                <ul class="clean-list">
+                    {% for feedback in data.recent_feedback %}
+                        <li class="list-block">
+                            <strong>{{ feedback.section.title }}</strong>
+                            <p>{{ feedback.message }}</p>
+                            <span class="muted">{{ feedback.advisor.full_name }} · {{ feedback.created_at.strftime('%d/%m/%Y') }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty-copy">Os feedbacks enviados pelo orientador serao listados aqui.</p>
+            {% endif %}
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="panel-label">Cronograma</p>
+                    <h2 class="panel-title">Proximas etapas</h2>
+                </div>
+            </div>
+            {% if data.next_stages %}
+                <ul class="clean-list">
+                    {% for stage in data.next_stages %}
+                        <li class="list-block">
+                            <strong>{{ stage.title }}</strong>
+                            <p>{{ stage.description }}</p>
+                            <span class="muted">Prazo: {{ stage.due_date.strftime('%d/%m/%Y') if stage.due_date else 'sem data' }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+
+        <section class="panel panel-full">
+            <div class="panel-heading">
+                <div>
+                    <p class="panel-label">Alertas e contexto</p>
+                    <h2 class="panel-title">Sinais de acompanhamento</h2>
+                </div>
+            </div>
+            {% if data.active_alerts %}
+                <div class="tag-row">
+                    {% for alert in data.active_alerts %}
+                        <span class="badge badge-{{ alert.severity }}">{{ alert.message }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-copy">Sem alertas ativos neste momento.</p>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

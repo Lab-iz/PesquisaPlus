@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Cadastro{% endblock %}
+{% block content %}
+<section class="auth-shell auth-wide">
+    <div class="auth-card">
+        <p class="eyebrow">Cadastro</p>
+        <h1 class="page-title">Criar conta academica</h1>
+        <form method="post" class="form-grid two-columns">
+            <label class="field">
+                <span>Nome completo</span>
+                <input type="text" name="full_name" required>
+            </label>
+            <label class="field">
+                <span>E-mail</span>
+                <input type="email" name="email" required>
+            </label>
+            <label class="field">
+                <span>Senha</span>
+                <input type="password" name="password" required>
+            </label>
+            <label class="field">
+                <span>Perfil</span>
+                <select name="role" required>
+                    {% for role in roles %}
+                        <option value="{{ role.slug }}">{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="field">
+                <span>Curso</span>
+                <input type="text" name="course_name">
+            </label>
+            <label class="field">
+                <span>Semestre</span>
+                <input type="text" name="semester">
+            </label>
+            <label class="field">
+                <span>Matricula</span>
+                <input type="text" name="registration_number">
+            </label>
+            <label class="field">
+                <span>Linha de pesquisa</span>
+                <input type="text" name="research_line">
+            </label>
+            <label class="field">
+                <span>Departamento</span>
+                <input type="text" name="department">
+            </label>
+            <label class="field">
+                <span>Titulacao</span>
+                <input type="text" name="teacher_title" placeholder="Dra., Dr., Me.">
+            </label>
+            <div class="form-actions full-span">
+                <button type="submit" class="button button-primary">Criar conta</button>
+                <a href="{{ url_for('auth.login') }}" class="button button-secondary">Voltar ao login</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

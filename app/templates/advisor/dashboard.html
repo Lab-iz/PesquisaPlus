@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Painel do Orientador{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Painel do orientador</p>
+        <h1 class="page-title">Acompanhamento consolidado dos orientandos.</h1>
+        <p class="page-subtitle">Visualize progresso, secoes em revisao, atrasos e temas recorrentes sem perder o contexto do processo de orientacao.</p>
+    </div>
+    <div class="metric-grid">
+        <article class="metric-card"><span class="metric-label">Orientandos ativos</span><strong class="metric-value">{{ data.project_count }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Secoes para revisar</span><strong class="metric-value">{{ data.pending_reviews }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Projetos com atraso</span><strong class="metric-value">{{ data.delayed_count }}</strong></article>
+    </div>
+    <div class="content-grid">
+        <section class="panel panel-full">
+            <div class="panel-heading">
+                <div><p class="panel-label">Projetos vinculados</p><h2 class="panel-title">Visao de orientacao</h2></div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Estudante</th>
+                        <th>Projeto</th>
+                        <th>Status</th>
+                        <th>Secoes pendentes</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in data.projects %}
+                        <tr>
+                            <td>{{ project.student.full_name }}</td>
+                            <td>{{ project.title }}</td>
+                            <td><span class="badge badge-neutral">{{ project.status }}</span></td>
+                            <td>{{ project.sections | rejectattr('status', 'equalto', 'approved') | list | length }}</td>
+                            <td><a href="{{ url_for('projects.detail', project_id=project.id) }}" class="text-link">Abrir projeto</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Temas</p><h2 class="panel-title">Areas frequentes</h2></div></div>
+            <ul class="clean-list">
+                {% for label, count in data.top_themes %}
+                    <li class="list-row"><strong>{{ label }}</strong><span class="muted">{{ count }} projeto(s)</span></li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Feedback recente</p><h2 class="panel-title">Ultimas devolutivas</h2></div></div>
+            <ul class="clean-list">
+                {% for feedback in data.recent_feedback %}
+                    <li class="list-block">
+                        <strong>{{ feedback.project.student.full_name }} · {{ feedback.section.title }}</strong>
+                        <p>{{ feedback.message }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</section>
+{% endblock %}

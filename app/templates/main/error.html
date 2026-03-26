@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | {{ title }}{% endblock %}
+{% block content %}
+<section class="page-shell narrow-shell">
+    <div class="page-header">
+        <p class="eyebrow">Navegacao</p>
+        <h1 class="page-title">{{ title }}</h1>
+        <p class="page-subtitle">{{ message }}</p>
+    </div>
+    <a href="{{ url_for('main.home') if not current_user.is_authenticated else url_for('main.dashboard') }}" class="button button-primary">Voltar ao fluxo principal</a>
+</section>
+{% endblock %}

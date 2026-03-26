@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | {{ project.title }}{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header row-header">
+        <div>
+            <p class="eyebrow">{{ project.project_type }} · {{ project.thematic_area or 'Area em definicao' }}</p>
+            <h1 class="page-title">{{ project.title }}</h1>
+            <p class="page-subtitle">{{ project.theme or 'Defina o tema e o recorte para consolidar o projeto.' }}</p>
+        </div>
+        {% if current_user.role_slug in ['student', 'admin'] %}
+            <a href="{{ url_for('projects.edit_core', project_id=project.id) }}" class="button button-secondary">Editar estrutura</a>
+        {% endif %}
+    </div>
+
+    <div class="metric-grid">
+        <article class="metric-card"><span class="metric-label">Progresso global</span><strong class="metric-value">{{ project_progress }}%</strong><div class="progress-bar"><span style="width: {{ project_progress }}%"></span></div></article>
+        <article class="metric-card"><span class="metric-label">Referencias</span><strong class="metric-value">{{ project.references|length }}</strong><span class="metric-note">Base bibliografica cadastrada</span></article>
+        <article class="metric-card"><span class="metric-label">Feedbacks</span><strong class="metric-value">{{ project.section_feedbacks|length }}</strong><span class="metric-note">Registros de orientacao</span></article>
+        <article class="metric-card"><span class="metric-label">Prazo alvo</span><strong class="metric-value">{{ project.target_completion_date.strftime('%d/%m/%Y') if project.target_completion_date else 'Sem data' }}</strong></article>
+    </div>
+
+    <div class="content-grid">
+        <section class="panel panel-full">
+            <div class="panel-heading">
+                <div><p class="panel-label">Estrutura guiada</p><h2 class="panel-title">Elementos centrais do projeto</h2></div>
+                <div class="tag-row">
+                    <a href="{{ url_for('references.project_references', project_id=project.id) }}" class="button button-tertiary">Referencias</a>
+                    <a href="{{ url_for('bibliographic_search.index', project_id=project.id) }}" class="button button-tertiary">Busca bibliografica</a>
+                </div>
+            </div>
+            <div class="definition-grid">
+                <div><span>Problema</span><p>{{ project.research_problem or 'Pendente' }}</p></div>
+                <div><span>Objetivo geral</span><p>{{ project.general_objective or 'Pendente' }}</p></div>
+                <div><span>Justificativa</span><p>{{ project.justification or 'Pendente' }}</p></div>
+                <div><span>Metodologia</span><p>{{ project.methodology_summary or 'Pendente' }}</p></div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Secoes do trabalho</p><h2 class="panel-title">Escrita estruturada</h2></div></div>
+            <ul class="clean-list">
+                {% for section in project.sections %}
+                    <li class="list-row">
+                        <div>
+                            <strong>{{ section.title }}</strong>
+                            <span class="muted">{{ section.word_count }} palavras · {{ section.status }}</span>
+                        </div>
+                        <a href="{{ url_for('projects.section_editor', project_id=project.id, section_key=section.key) }}" class="button button-tertiary">Abrir</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Resumo</p><h2 class="panel-title">Leitura assistida</h2></div></div>
+            <div class="abstract-analysis">
+                <p class="muted">Palavras estimadas: {{ abstract_analysis.word_count }}</p>
+                <div class="tag-row">
+                    {% for key, present in abstract_analysis.presence.items() %}
+                        <span class="badge {% if present %}badge-success{% else %}badge-warning{% endif %}">{{ key }}</span>
+                    {% endfor %}
+                </div>
+                <ul class="clean-list">
+                    {% for suggestion in abstract_analysis.suggestions %}
+                        <li class="list-block">{{ suggestion }}</li>
+                    {% else %}
+                        <li class="list-block">O resumo ja contempla elementos esperados para esta fase.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section class="panel panel-full">
+            <div class="panel-heading"><div><p class="panel-label">Cronograma e etapas</p><h2 class="panel-title">Planejamento em andamento</h2></div></div>
+            <div class="stage-grid">
+                {% for stage in project.stages %}
+                    <article class="stage-card">
+                        <div class="stage-header">
+                            <strong>{{ stage.title }}</strong>
+                            <span class="badge badge-neutral">{{ stage.status }}</span>
+                        </div>
+                        <p>{{ stage.description }}</p>
+                        <p class="muted">Prazo: {{ stage.due_date.strftime('%d/%m/%Y') if stage.due_date else 'sem data' }}</p>
+                        <ul class="clean-list compact-list">
+                            {% for item in stage.checklist_items %}
+                                <li class="list-row">
+                                    <span>{{ item.label }}</span>
+                                    {% if current_user.role_slug in ['student', 'admin'] %}
+                                        <form method="post" action="{{ url_for('projects.toggle_stage_item', project_id=project.id, stage_id=stage.id, item_id=item.id) }}">
+                                            <button type="submit" class="toggle-check {% if item.is_done %}is-on{% endif %}">{{ 'Feito' if item.is_done else 'Marcar' }}</button>
+                                        </form>
+                                    {% else %}
+                                        <span class="muted">{{ 'Feito' if item.is_done else 'Pendente' }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="panel panel-full">
+            <div class="panel-heading"><div><p class="panel-label">Alertas e observacoes</p><h2 class="panel-title">Acompanhamento do projeto</h2></div></div>
+            {% if project.alerts %}
+                <div class="tag-row">
+                    {% for alert in project.alerts if alert.is_active %}
+                        <span class="badge badge-{{ alert.severity }}">{{ alert.message }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <ul class="clean-list">
+                {% for comment in project.advisor_comments %}
+                    <li class="list-block">
+                        <strong>{{ comment.advisor.full_name }}</strong>
+                        <p>{{ comment.message }}</p>
+                    </li>
+                {% else %}
+                    <li class="list-block">Sem observacoes gerais registradas.</li>
+                {% endfor %}
+            </ul>
+            {% if current_user.role_slug in ['advisor', 'admin'] %}
+                <form method="post" action="{{ url_for('advisor.add_comment', project_id=project.id) }}" class="inline-form">
+                    <textarea name="message" rows="3" placeholder="Registrar observacao geral"></textarea>
+                    <button type="submit" class="button button-primary">Salvar observacao</button>
+                </form>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

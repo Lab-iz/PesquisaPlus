@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Editar Projeto{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Construcao guiada</p>
+        <h1 class="page-title">Refinar estrutura do projeto.</h1>
+        <p class="page-subtitle">Atualize os elementos centrais de consistencia academica e planejamento.</p>
+    </div>
+    <form method="post" class="panel form-grid two-columns">
+        <label class="field"><span>Titulo provisorio</span><input type="text" name="title" value="{{ project.title }}" required></label>
+        <label class="field"><span>Tipo</span><select name="project_type"><option value="{{ project.project_type }}">{{ project.project_type }}</option><option>TCC</option><option>Iniciacao Cientifica</option><option>Artigo</option></select></label>
+        <label class="field"><span>Area tematica</span><input type="text" name="thematic_area" value="{{ project.thematic_area }}"></label>
+        <label class="field"><span>Curso</span><input type="text" name="course_name" value="{{ project.course_name }}"></label>
+        <label class="field full-span"><span>Tema</span><textarea name="theme" rows="3">{{ project.theme }}</textarea></label>
+        <label class="field full-span"><span>Problema de pesquisa</span><textarea name="research_problem" rows="3">{{ project.research_problem }}</textarea></label>
+        <label class="field full-span"><span>Objetivo geral</span><textarea name="general_objective" rows="3">{{ project.general_objective }}</textarea></label>
+        <label class="field full-span"><span>Objetivos especificos</span><textarea name="specific_objectives" rows="4">{{ project.specific_objectives }}</textarea></label>
+        <label class="field full-span"><span>Justificativa</span><textarea name="justification" rows="4">{{ project.justification }}</textarea></label>
+        <label class="field full-span"><span>Metodologia</span><textarea name="methodology_summary" rows="4">{{ project.methodology_summary }}</textarea></label>
+        <label class="field"><span>Hipotese</span><input type="text" name="hypothesis" value="{{ project.hypothesis }}"></label>
+        <label class="field"><span>Palavras-chave</span><input type="text" name="keywords" value="{{ project.keywords }}"></label>
+        <label class="field"><span>Orientador</span><select name="advisor_id"><option value="">Sem vinculo</option>{% for advisor in advisors %}<option value="{{ advisor.id }}" {% if project.advisor_id == advisor.id %}selected{% endif %}>{{ advisor.full_name }}</option>{% endfor %}</select></label>
+        <label class="field"><span>Prazo previsto</span><input type="date" name="target_completion_date" value="{{ project.target_completion_date.strftime('%Y-%m-%d') if project.target_completion_date else '' }}"></label>
+        <div class="form-actions full-span"><button type="submit" class="button button-primary">Salvar estrutura</button></div>
+    </form>
+</section>
+{% endblock %}

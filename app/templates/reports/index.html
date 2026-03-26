@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Relatorios{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header row-header">
+        <div>
+            <p class="eyebrow">Relatorios e evidencias</p>
+            <h1 class="page-title">Indicadores exportaveis da plataforma.</h1>
+            <p class="page-subtitle">Acompanhe progresso, feedbacks e referencias com exportacao simples em CSV.</p>
+        </div>
+        <div class="tag-row">
+            <a href="{{ url_for('reports.export', kind='projects') }}" class="button button-secondary">Exportar projetos</a>
+            <a href="{{ url_for('reports.export', kind='feedback') }}" class="button button-secondary">Exportar feedback</a>
+            <a href="{{ url_for('reports.export', kind='references') }}" class="button button-secondary">Exportar referencias</a>
+        </div>
+    </div>
+    <div class="metric-grid">
+        <article class="metric-card"><span class="metric-label">Projetos</span><strong class="metric-value">{{ summary.total_projects }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Progresso medio</span><strong class="metric-value">{{ summary.average_progress }}%</strong></article>
+        <article class="metric-card"><span class="metric-label">Feedbacks</span><strong class="metric-value">{{ summary.total_feedbacks }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Referencias</span><strong class="metric-value">{{ summary.total_references }}</strong></article>
+    </div>
+    <section class="panel">
+        <table class="data-table">
+            <thead><tr><th>Projeto</th><th>Estudante</th><th>Orientador</th><th>Area</th><th>Status</th><th>Progresso</th><th>Referencias</th><th>Feedbacks</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.title }}</td>
+                        <td>{{ row.student }}</td>
+                        <td>{{ row.advisor }}</td>
+                        <td>{{ row.area }}</td>
+                        <td>{{ row.status }}</td>
+                        <td>{{ row.progress }}%</td>
+                        <td>{{ row.references }}</td>
+                        <td>{{ row.feedbacks }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="8">Nenhum dado disponivel para este escopo.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</section>
+{% endblock %}

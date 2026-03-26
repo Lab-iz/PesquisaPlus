@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Novo Projeto{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Inicio do projeto</p>
+        <h1 class="page-title">Abrir um novo fluxo de TCC ou pesquisa.</h1>
+        <p class="page-subtitle">Comece pelo recorte do estudo e pelos elementos basicos de consistencia metodologica.</p>
+    </div>
+    <form method="post" class="panel form-grid two-columns">
+        <label class="field"><span>Titulo provisorio</span><input type="text" name="title" required></label>
+        <label class="field"><span>Tipo</span><select name="project_type"><option>TCC</option><option>Iniciacao Cientifica</option><option>Artigo</option></select></label>
+        <label class="field"><span>Area tematica</span><input type="text" name="thematic_area"></label>
+        <label class="field"><span>Curso</span><input type="text" name="course_name" value="{{ current_user.course_name }}"></label>
+        <label class="field full-span"><span>Tema</span><textarea name="theme" rows="3"></textarea></label>
+        <label class="field full-span"><span>Problema de pesquisa</span><textarea name="research_problem" rows="3"></textarea></label>
+        <label class="field full-span"><span>Objetivo geral</span><textarea name="general_objective" rows="3"></textarea></label>
+        <label class="field full-span"><span>Objetivos especificos</span><textarea name="specific_objectives" rows="4"></textarea></label>
+        <label class="field full-span"><span>Justificativa</span><textarea name="justification" rows="4"></textarea></label>
+        <label class="field full-span"><span>Metodologia inicial</span><textarea name="methodology_summary" rows="4"></textarea></label>
+        <label class="field"><span>Hipotese</span><input type="text" name="hypothesis"></label>
+        <label class="field"><span>Palavras-chave</span><input type="text" name="keywords" placeholder="separadas por virgula"></label>
+        <label class="field"><span>Orientador</span><select name="advisor_id"><option value="">Sem vinculo</option>{% for advisor in advisors %}<option value="{{ advisor.id }}">{{ advisor.full_name }}</option>{% endfor %}</select></label>
+        <label class="field"><span>Prazo previsto</span><input type="date" name="target_completion_date"></label>
+        <div class="form-actions full-span">
+            <button type="submit" class="button button-primary">Criar projeto</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

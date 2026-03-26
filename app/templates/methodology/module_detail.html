@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | {{ module.title }}{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Trilha metodologica</p>
+        <h1 class="page-title">{{ module.title }}</h1>
+        <p class="page-subtitle">{{ module.overview }}</p>
+    </div>
+    <section class="panel">
+        {% if module_progress %}
+            <div class="progress-bar"><span style="width: {{ module_progress.progress }}%"></span></div>
+            <p class="muted">{{ module_progress.completed }}/{{ module_progress.total }} licoes concluidas neste modulo.</p>
+        {% endif %}
+        <ul class="clean-list">
+            {% for lesson in module.lessons %}
+                <li class="list-row">
+                    <div>
+                        <strong>{{ lesson.title }}</strong>
+                        <span class="muted">{{ lesson.summary }}</span>
+                    </div>
+                    <a href="{{ url_for('methodology.lesson_detail', lesson_id=lesson.id) }}" class="button button-tertiary">Abrir licao</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+</section>
+{% endblock %}

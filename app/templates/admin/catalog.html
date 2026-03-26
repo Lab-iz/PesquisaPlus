@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Catalogo{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Catalogo institucional</p>
+        <h1 class="page-title">Modelos e trilhas</h1>
+        <p class="page-subtitle">Base inicial para gestao de conteudo formativo e parametros institucionais.</p>
+    </div>
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Trilhas metodologicas</p><h2 class="panel-title">Conteudo ativo</h2></div></div>
+            <ul class="clean-list">
+                {% for module in modules %}
+                    <li class="list-block"><strong>{{ module.title }}</strong><p>{{ module.overview }}</p></li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Parametros</p><h2 class="panel-title">Pronto para expansao</h2></div></div>
+            <ul class="clean-list">
+                <li class="list-block">Modelos de TCC por curso</li>
+                <li class="list-block">Areas tematicas e linhas de pesquisa</li>
+                <li class="list-block">Templates institucionais de checklist</li>
+                <li class="list-block">Novas trilhas metodologicas</li>
+            </ul>
+        </section>
+    </div>
+</section>
+{% endblock %}

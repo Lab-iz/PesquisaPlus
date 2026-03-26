@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | Painel da Coordenacao{% endblock %}
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <p class="eyebrow">Coordenacao academica</p>
+        <h1 class="page-title">Indicadores institucionais de andamento da producao cientifica.</h1>
+        <p class="page-subtitle">Monitore projetos ativos, progresso medio, etapas com mais dificuldade e movimento recente da plataforma.</p>
+    </div>
+    <div class="metric-grid">
+        <article class="metric-card"><span class="metric-label">Projetos ativos</span><strong class="metric-value">{{ data.project_count }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Estudantes</span><strong class="metric-value">{{ data.students }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Orientadores</span><strong class="metric-value">{{ data.advisors }}</strong></article>
+        <article class="metric-card"><span class="metric-label">Progresso medio</span><strong class="metric-value">{{ data.average_progress }}%</strong></article>
+    </div>
+    <div class="content-grid">
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Pontos de atencao</p><h2 class="panel-title">Secoes com maior recorrencia de dificuldade</h2></div></div>
+            <ul class="clean-list">
+                {% for section, count in data.difficult_sections %}
+                    <li class="list-row"><strong>{{ section }}</strong><span class="muted">{{ count }} ocorrencias</span></li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section class="panel">
+            <div class="panel-heading"><div><p class="panel-label">Catalogo institucional</p><h2 class="panel-title">Trilhas cadastradas</h2></div></div>
+            <p class="big-number">{{ data.module_count }}</p>
+            <p class="muted">Modulos metodologicos disponiveis para formacao progressiva.</p>
+        </section>
+        <section class="panel panel-full">
+            <div class="panel-heading"><div><p class="panel-label">Projetos recentes</p><h2 class="panel-title">Radar institucional</h2></div></div>
+            <table class="data-table">
+                <thead><tr><th>Projeto</th><th>Estudante</th><th>Status</th><th>Atualizacao</th><th></th></tr></thead>
+                <tbody>
+                    {% for project in data.projects %}
+                        <tr>
+                            <td>{{ project.title }}</td>
+                            <td>{{ project.student.full_name }}</td>
+                            <td>{{ project.status }}</td>
+                            <td>{{ project.updated_at.strftime('%d/%m/%Y') }}</td>
+                            <td><a href="{{ url_for('projects.detail', project_id=project.id) }}" class="text-link">Ver</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</section>
+{% endblock %}

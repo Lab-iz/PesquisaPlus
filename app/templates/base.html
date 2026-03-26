@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ app_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body class="{% if current_user.is_authenticated %}app-body{% else %}public-body{% endif %}">
+    {% if current_user.is_authenticated %}<div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand-block">
+                <a href="{{ url_for('main.dashboard') }}" class="brand-link">{{ app_name }}</a>
+                <p class="brand-meta">Preparacao institucional para TCC e pesquisa.</p>
+            </div>
+            <nav class="nav-block">
+                <a href="{{ url_for('main.dashboard') }}" class="nav-link">Painel</a>
+                <a href="{{ url_for('projects.index') }}" class="nav-link">Projetos</a>
+                <a href="{{ url_for('methodology.index') }}" class="nav-link">Metodologia</a>
+                {% if current_user.role_slug == 'student' and current_user.active_project %}
+                    <a href="{{ url_for('references.project_references', project_id=current_user.active_project.id) }}" class="nav-link">Referencias</a>
+                    <a href="{{ url_for('bibliographic_search.index', project_id=current_user.active_project.id) }}" class="nav-link">Busca Bibliografica</a>
+                {% endif %}
+                {% if current_user.role_slug == 'advisor' %}
+                    <a href="{{ url_for('advisor.dashboard') }}" class="nav-link">Orientacao</a>
+                {% endif %}
+                <a href="{{ url_for('reports.index') }}" class="nav-link">Relatorios</a>
+                {% if current_user.role_slug == 'admin' %}
+                    <a href="{{ url_for('admin.users') }}" class="nav-link">Usuarios</a>
+                    <a href="{{ url_for('admin.catalog') }}" class="nav-link">Catalogo</a>
+                {% endif %}
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-chip">
+                    <strong>{{ current_user.full_name }}</strong>
+                    <span>{{ current_user.role.name }}</span>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="text-link">Sair</a>
+            </div>
+        </aside>
+        <main class="main-panel">
+            {% include 'partials/_flash.html' %}
+    {% else %}
+        {% include 'partials/_flash.html' %}
+    {% endif %}
+    {% block content %}{% endblock %}
+    {% if current_user.is_authenticated %}
+        </main>
+    </div>
+    {% endif %}
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

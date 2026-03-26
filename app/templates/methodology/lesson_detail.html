@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ app_name }} | {{ lesson.title }}{% endblock %}
+{% block content %}
+<section class="page-shell narrow-shell">
+    <div class="page-header">
+        <p class="eyebrow">Licao</p>
+        <h1 class="page-title">{{ lesson.title }}</h1>
+        <p class="page-subtitle">{{ lesson.summary }}</p>
+    </div>
+    <div class="panel prose-panel">
+        <h2>Pontos-chave</h2>
+        <p>{{ lesson.key_points }}</p>
+        <h2>Exemplo pratico</h2>
+        <p>{{ lesson.practical_example }}</p>
+        <h2>Atividade breve</h2>
+        <p>{{ lesson.activity_prompt }}</p>
+        <h2>Checklist</h2>
+        <p>{{ lesson.checklist_text }}</p>
+    </div>
+    {% if current_user.role_slug == 'student' %}
+        <form method="post" class="panel form-stack">
+            <label class="field">
+                <span>Reflexao ou resposta da atividade</span>
+                <textarea name="reflection" rows="6" placeholder="Registre como voce aplicou esta licao ao seu projeto."></textarea>
+            </label>
+            <label class="checkbox-field"><input type="checkbox" name="checklist_done" value="1" checked> <span>Conclui a checklist desta licao</span></label>
+            <button type="submit" class="button button-primary">Marcar como concluida</button>
+        </form>
+    {% endif %}
+</section>
+{% endblock %}
